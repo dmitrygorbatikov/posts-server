@@ -6,7 +6,7 @@ export class Post extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   link: string;
 
   @Prop({ required: true })
