@@ -17,7 +17,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 @Controller('post')
 export class PostController {
   constructor(private postService: PostService) {}
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_HOUR)
   async uploadPosts() {
     await this.postService.uploadNewPosts();
   }
