@@ -27,11 +27,6 @@ export class PostController {
     return await this.postService.find(query);
   }
 
-  @Get(':id')
-  async getOnePost(@Param() param) {
-    return await this.postService.findOneById(param.id);
-  }
-
   @Post()
   async createPost(@Body() body: CreatePostDto) {
     return await this.postService.save(body);
@@ -44,10 +39,5 @@ export class PostController {
   @Delete('/list')
   async deletePostList(@Query() query): Promise<any> {
     return await this.postService.deleteMany(query.ids.split(','));
-  }
-
-  @Delete('/item/:id')
-  async deletePost(@Param() param): Promise<any> {
-    return await this.postService.deleteOne(param.id);
   }
 }

@@ -6,6 +6,7 @@ import { loginSchema } from '../../validation/auth';
 import { UserService } from '../user/user.service';
 import { UserRoleEnum } from '../user/user.types';
 import { SignUpUserDto } from './dto/signup-user.dto';
+import { ErrorTypes } from '../../types/error.types';
 
 @Injectable()
 export class AuthService {
@@ -15,22 +16,31 @@ export class AuthService {
     const { error } = loginSchema.validate({ email, password });
 
     if (error) {
-      throw new HttpException(error, HttpStatus.NOT_FOUND);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
-      throw new HttpException('UserNotFound', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        { email: ErrorTypes.UserNotFound },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     if (user.role === UserRoleEnum.user) {
-      throw new HttpException('NotEnoughRights', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        { email: ErrorTypes.NotEnoughRights },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new HttpException('IncorrectPassword', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { password: ErrorTypes.IncorrectPassword },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const accessToken = jwt.sign(
@@ -49,7 +59,10 @@ export class AuthService {
     const candidate = await this.userService.findByEmail(email);
 
     if (candidate) {
-      throw new HttpException('UserAlreadyExist', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { email: ErrorTypes.UserAlreadyExist },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
