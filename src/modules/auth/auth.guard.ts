@@ -1,4 +1,9 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'jsonwebtoken';
 import * as process from 'process';
@@ -9,7 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       return jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
     } catch (err) {
-      throw new Error('Invalid token');
+      throw new HttpException({ user: 'InvalidToken' }, HttpStatus.BAD_REQUEST);
     }
   }
 
