@@ -3,6 +3,7 @@ WORKDIR .
 COPY /*.json ./
 COPY . .
 RUN npm install -g pnpm
+RUN pnpm install
 RUN pnpm run build
 
 FROM node:18.15.0-alpine
